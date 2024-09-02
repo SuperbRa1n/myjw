@@ -51,8 +51,10 @@ class Study extends Component {
     const classInfo = await AsyncStorage.getItem('classInfo');
     const gradeInfo = await AsyncStorage.getItem('gradeInfo');
     this.setState({
-      classInfo: classInfo === '{}' ? [] : JSON.parse(classInfo ? classInfo : '[]'),
-      gradeInfo: gradeInfo === '{}' ? [] : JSON.parse(gradeInfo ? gradeInfo : '[]'),
+      classInfo:
+        classInfo === '{}' ? [] : JSON.parse(classInfo ? classInfo : '[]'),
+      gradeInfo:
+        gradeInfo === '{}' ? [] : JSON.parse(gradeInfo ? gradeInfo : '[]'),
     });
     // 遍历classInfo，生成termSwitcher
     const termSwitcher: any = [];
@@ -113,8 +115,10 @@ class Study extends Component {
       const classInfo = await AsyncStorage.getItem('classInfo');
       const gradeInfo = await AsyncStorage.getItem('gradeInfo');
       this.setState({
-        classInfo: classInfo === '{}' ? [] : JSON.parse(classInfo ? classInfo : '[]'),
-        gradeInfo: gradeInfo === '{}' ? [] : JSON.parse(gradeInfo ? gradeInfo : '[]'),
+        classInfo:
+          classInfo === '{}' ? [] : JSON.parse(classInfo ? classInfo : '[]'),
+        gradeInfo:
+          gradeInfo === '{}' ? [] : JSON.parse(gradeInfo ? gradeInfo : '[]'),
       });
       console.log(this.state.classInfo);
       if (this.state.classInfo.length > 0) {
@@ -143,10 +147,8 @@ class Study extends Component {
           if (item.xnmmc === term.substring(0, 9)) {
             yearItems.push(item);
             if (
-              (item.xqmmc === '1' &&
-                term.substring(9, 11) === '秋冬') ||
-              (item.xqmmc === '2' &&
-                term.substring(9, 11) === '春夏')
+              (item.xqmmc === '1' && term.substring(9, 11) === '秋冬') ||
+              (item.xqmmc === '2' && term.substring(9, 11) === '春夏')
             ) {
               xueqiItems.push(item);
             }
@@ -174,7 +176,7 @@ class Study extends Component {
       totalCredit += parseFloat(item.xf);
       totalGrade += parseFloat(item.xf) * parseFloat(item.jd);
     });
-    return (totalGrade / totalCredit);
+    return totalGrade / totalCredit;
   };
 
   // 计算学分
@@ -194,7 +196,7 @@ class Study extends Component {
       totalCredit += parseFloat(item.xf);
       totalGrade += parseFloat(item.xf) * parseFloat(item.bfzcj);
     });
-    return (totalGrade / totalCredit);
+    return totalGrade / totalCredit;
   };
 
   // 计算学分
@@ -208,7 +210,7 @@ class Study extends Component {
       }
     });
     return totalXueFen;
-  }
+  };
 
   // 计算课程数
   calculateCourse = (classItem: any) => {
@@ -219,20 +221,23 @@ class Study extends Component {
       }
     });
     return allCourse.length;
-  } 
+  };
 
   // 通过学期获取课程
   getCoursesByTerm = (term: string) => {
     const xnmmc = term.substring(0, 9);
     const xqmmc = term.substring(9, 11);
-    const xqmTable: any = { 秋冬: '1', 春夏: '2' };
-    const xqmmcTable: any = { 秋冬: '3', 春夏: '12' };
+    const xqmTable: any = {秋冬: '1', 春夏: '2'};
+    const xqmmcTable: any = {秋冬: '3', 春夏: '12'};
     let courses: any = [];
     this.state.classInfo.forEach(item => {
       let items = item.kbList;
       if (items.length > 0) {
         items.forEach((item: any) => {
-          if (item.xnm === xnmmc.substring(0, 4) && item.xqm === xqmmcTable[xqmmc]) {
+          if (
+            item.xnm === xnmmc.substring(0, 4) &&
+            item.xqm === xqmmcTable[xqmmc]
+          ) {
             courses.push(item);
           }
         });
@@ -243,7 +248,11 @@ class Study extends Component {
       if (items.length > 0) {
         items.forEach((item: any) => {
           // 避免重复添加
-          if (item.xnmc === xnmmc && item.xqmmc === xqmTable[xqmmc] && !courses.includes(item)) {
+          if (
+            item.xnmc === xnmmc &&
+            item.xqmmc === xqmTable[xqmmc] &&
+            !courses.includes(item)
+          ) {
             courses.push(item);
           }
         });
@@ -261,7 +270,7 @@ class Study extends Component {
       }
     });
     return totalKeShi;
-  }
+  };
 
   // 计算课表课程数
   calculateKbCourse = (classItem: any) => {
@@ -274,7 +283,7 @@ class Study extends Component {
       }
     });
     return allCourse.length;
-  }
+  };
 
   // 计算实践课程数
   calculateSjkCourse = (classItem: any) => {
@@ -287,7 +296,7 @@ class Study extends Component {
       }
     });
     return allCourse.length;
-  }
+  };
 
   // 计算实践课程学分
   calculateSjkXueFen = (classItem: any) => {
@@ -302,7 +311,7 @@ class Study extends Component {
       }
     });
     return totalXueFen;
-  }
+  };
 
   // 计算课表课程学分
   calculateKbXueFen = (classItem: any) => {
@@ -317,8 +326,7 @@ class Study extends Component {
       }
     });
     return totalXueFen;
-  }
-
+  };
 
   render() {
     // 判断是否有课程信息
@@ -352,11 +360,13 @@ class Study extends Component {
             ))}
           </View>
         </ScrollView>
-        <TouchableOpacity style={styles.section} onPress={() => {
-          // 跳转到成绩详情页面
-          const {navigation} = this.props as StudyProps;
-          navigation.navigate('成绩');
-        }}>
+        <TouchableOpacity
+          style={styles.section}
+          onPress={() => {
+            // 跳转到成绩详情页面
+            const {navigation} = this.props as StudyProps;
+            navigation.navigate('成绩');
+          }}>
           <View style={[styles.sectionHeader, {backgroundColor: '#E0F7FA'}]}>
             <View style={styles.sectionHeaderLeft}>
               <Icon name="school-outline" size={20} color="#333" />
@@ -369,7 +379,11 @@ class Study extends Component {
           </View>
           <View style={styles.gradeContainer}>
             {[
-              {label: '总均绩', value: this.state.totalGrade.toFixed(2), color: '#E3F2FD'},
+              {
+                label: '总均绩',
+                value: this.state.totalGrade.toFixed(2),
+                color: '#E3F2FD',
+              },
               {
                 label: '获得学分',
                 value: this.state.totalCredit.toFixed(2),
@@ -427,26 +441,61 @@ class Study extends Component {
               <Text style={styles.sectionUpdate}>以教务网数据为准！</Text>
             </View>
           </View>
-          <TouchableOpacity style={styles.courseContainer} onPress={() => {
-            // 跳转到课程详情页面
-            const {navigation} = this.props as StudyProps;
-            navigation.navigate('课表');
-          }}>
+          <TouchableOpacity
+            style={styles.courseContainer}
+            onPress={() => {
+              // 跳转到课程详情页面
+              const {navigation} = this.props as StudyProps;
+              navigation.navigate('课表');
+            }}>
             <View style={styles.courseSummary}>
-              <Text style={styles.courseSummaryItem}>{this.calculateCourse(this.getCoursesByTerm(this.state.selectedTerm))} 门课程</Text>
-              <Text style={styles.courseSummaryItem}>{this.calculateXueFen(this.getCoursesByTerm(this.state.selectedTerm))} 学分</Text>
-              <Text style={styles.courseSummaryItem}>{this.calculateTotalKeShi(this.getCoursesByTerm(this.state.selectedTerm))} 总学时</Text>
+              <Text style={styles.courseSummaryItem}>
+                {this.calculateCourse(
+                  this.getCoursesByTerm(this.state.selectedTerm),
+                )}{' '}
+                门课程
+              </Text>
+              <Text style={styles.courseSummaryItem}>
+                {this.calculateXueFen(
+                  this.getCoursesByTerm(this.state.selectedTerm),
+                )}{' '}
+                学分
+              </Text>
+              <Text style={styles.courseSummaryItem}>
+                {this.calculateTotalKeShi(
+                  this.getCoursesByTerm(this.state.selectedTerm),
+                )}{' '}
+                总学时
+              </Text>
             </View>
             <View style={styles.courseDetails}>
               <View
                 style={[styles.courseDetailItem, {backgroundColor: '#FFEBEE'}]}>
                 <Text style={styles.courseTerm}>课表课程</Text>
-                <Text style={styles.courseValue}>{this.calculateKbXueFen(this.getCoursesByTerm(this.state.selectedTerm))}学分/{this.calculateKbCourse(this.getCoursesByTerm(this.state.selectedTerm))}门课程</Text>
+                <Text style={styles.courseValue}>
+                  {this.calculateKbXueFen(
+                    this.getCoursesByTerm(this.state.selectedTerm),
+                  )}
+                  学分/
+                  {this.calculateKbCourse(
+                    this.getCoursesByTerm(this.state.selectedTerm),
+                  )}
+                  门课程
+                </Text>
               </View>
               <View
                 style={[styles.courseDetailItem, {backgroundColor: '#E3F2FD'}]}>
                 <Text style={styles.courseTerm}>实践（其它）课程</Text>
-                <Text style={styles.courseValue}>{this.calculateSjkXueFen(this.getCoursesByTerm(this.state.selectedTerm))}学分/{this.calculateSjkCourse(this.getCoursesByTerm(this.state.selectedTerm))}门课程</Text>
+                <Text style={styles.courseValue}>
+                  {this.calculateSjkXueFen(
+                    this.getCoursesByTerm(this.state.selectedTerm),
+                  )}
+                  学分/
+                  {this.calculateSjkCourse(
+                    this.getCoursesByTerm(this.state.selectedTerm),
+                  )}
+                  门课程
+                </Text>
               </View>
             </View>
           </TouchableOpacity>
