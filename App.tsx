@@ -11,9 +11,10 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import Icon from 'react-native-vector-icons/Ionicons';
-import userStore from './src/utils/UserStore';
-import { Provider } from "mobx-react";
 import { RootStackParamList } from "./src/utils/types";
+import Grade from "./src/pages/grade/grade";
+import CourseDetail from "./src/pages/CourseDetail/CourseDetail";
+import Timetable from "./src/pages/timetable/TimeTable";
 
 const Stack = createStackNavigator<RootStackParamList>();
 const Tab = createBottomTabNavigator();
@@ -66,21 +67,26 @@ const TabNavigator = () => (
 class App extends React.Component {
   render() {
     return (
-      <Provider userStore={userStore}>
-        <NavigationContainer>
-          <Stack.Navigator initialRouteName="TabNavigator">
-            <Stack.Screen 
-              name="登录" 
-              component={Login} 
-            />
-            <Stack.Screen 
-              name="TabNavigator" 
-              component={TabNavigator} 
-              options={{ headerShown: false }} 
-            />
-          </Stack.Navigator>
-        </NavigationContainer>
-      </Provider>
+      <NavigationContainer>
+        <Stack.Navigator initialRouteName="TabNavigator">
+          <Stack.Screen 
+            name="登录" 
+            component={Login} 
+          />
+          <Stack.Screen 
+            name="TabNavigator" 
+            component={TabNavigator} 
+            options={{ headerShown: false }} 
+          />
+          <Stack.Screen 
+            name="成绩" 
+            component={Grade}
+            options={{ title: '成绩' }}
+        />
+        <Stack.Screen name="课程详情" component={CourseDetail} />
+        <Stack.Screen name="课表" component={Timetable} />
+        </Stack.Navigator>
+      </NavigationContainer>
     );
   }
 }

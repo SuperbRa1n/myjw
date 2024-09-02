@@ -7,6 +7,9 @@ export type RootStackParamList = {
 	'日程': undefined;
 	'学业': undefined;
 	'设置': undefined;
+	'成绩': undefined;
+	'课表': undefined;
+	'课程详情': { courseName: string };
 	TabNavigator: undefined;
 };
 
@@ -43,4 +46,25 @@ export type SettingScreenRouteProp = RouteProp<RootStackParamList, '设置'>;
 export type SettingProps = {
 	navigation: SettingScreenNavigationProp;
 	route: SettingScreenRouteProp;
+};
+
+export type GradeScreenNavigationProp = StackNavigationProp<RootStackParamList, '成绩'>;
+export type GradeScreenRouteProp = RouteProp<RootStackParamList, '成绩'>;
+export type GradeProps = {
+	navigation: GradeScreenNavigationProp;
+	route: GradeScreenRouteProp;
+};
+
+export type CourseDetailScreenNavigationProp = StackNavigationProp<RootStackParamList, '课程详情'>;
+export type CourseDetailScreenRouteProp = RouteProp<RootStackParamList, '课程详情'>;
+export type CourseDetailProps = {
+	navigation: CourseDetailScreenNavigationProp;
+	route: CourseDetailScreenRouteProp;
+};
+
+export type TimetableScreenNavigationProp = StackNavigationProp<RootStackParamList, '课表'>;
+export type TimetableScreenRouteProp = RouteProp<RootStackParamList, '课表'>;
+export type TimetableProps = {
+	navigation: TimetableScreenNavigationProp;
+	route: TimetableScreenRouteProp;
 };

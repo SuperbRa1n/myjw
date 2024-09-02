@@ -1,14 +1,14 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import {View, Text, StyleSheet} from 'react-native';
 
 class Schedule extends React.Component {
-	render() {
-		return (
-			<View style={styles.container}>
-				<Text style={styles.text}>日程</Text>
-			</View>
-		);
-	}
+  render() {
+    return (
+      <View style={styles.container}>
+        <Text style={styles.text}>日程</Text>
+      </View>
+    );
+  }
 }
 
 const styles = StyleSheet.create({
@@ -23,3 +23,4 @@ const styles = StyleSheet.create({
 });
 
 export default Schedule;
+

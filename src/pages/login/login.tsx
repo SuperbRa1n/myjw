@@ -1,10 +1,10 @@
 import axios from 'axios';
 import React, { Component } from 'react';
 import { View, Text, TextInput, Image, StyleSheet, TouchableOpacity, ActivityIndicator, GestureResponderEvent } from 'react-native';
-import userStore from '../../utils/UserStore';
 import { LoginProps } from '../../utils/types';
 import * as utils from '../../utils/utils';
 import { Alert } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 axios.defaults.headers.common['Access-Control-Allow-Origin'] = '*';
 axios.defaults.headers.common['Content-Type'] = 'application/x-www-form-urlencoded';
@@ -14,6 +14,7 @@ interface State {
   password: string;
   checked: boolean;
   isLoading: boolean;
+  message: string;
 }
 
 
@@ -25,6 +26,7 @@ class Login extends Component<LoginProps, State> {
       password: '',
       checked: false,
       isLoading: false,
+      message: '',
     };
   }
 
@@ -48,24 +50,26 @@ class Login extends Component<LoginProps, State> {
       username: this.state.username,
       password: this.state.password,
     };
+    this.setState({ message: '正在登录……' });
     axios.post(utils.BASE_URL + utils.LOGIN, data)
       .then(async (response) => {
-        this.setState({ isLoading: false });
         if (response.data.status === '登录成功') {
-          userStore.setUsername(this.state.username);
-          userStore.setPassword(this.state.password);
+          this.setState({ message: '登录成功，正在获取课程和成绩信息，请耐心等待……' });
+          await AsyncStorage.setItem('username', this.state.username);
+          await AsyncStorage.setItem('password', this.state.password);
           const JSESSIONID = response.data.JSESSIONID;
           const userInfo = await utils.getUserInfo(JSESSIONID);
-          userStore.setUserInfo(userInfo);
-          // 重新渲染设置页面并跳转
-          this.props.navigation.navigate('设置');
+          await AsyncStorage.setItem('userInfo', JSON.stringify(userInfo));
           const classInfo = await utils.getClassInfo(JSESSIONID); 
           const gradeInfo = await utils.getGradeInfo(JSESSIONID);
           Promise.all([classInfo, gradeInfo])
             .then((values) => {
-              userStore.setClassInfo(values[0]);
-              userStore.setGradeInfo(values[1]);
+              AsyncStorage.setItem('classInfo', JSON.stringify(values[0]));
+              AsyncStorage.setItem('gradeInfo', JSON.stringify(values[1]));
           });
+          // 重新渲染设置页面并跳转
+          this.setState({ isLoading: false });
+          this.props.navigation.navigate('设置');
         } else {
           // 弹窗提示登录失败
           Alert.alert('登录失败', response.data.status);
@@ -104,6 +108,9 @@ class Login extends Component<LoginProps, State> {
             <Text style={styles.buttonText}>登录</Text>
           )}
         </TouchableOpacity>
+        <View>
+          <Text>{this.state.message}</Text>
+        </View>
       </View>
     );
   }
