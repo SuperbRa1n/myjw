@@ -39,7 +39,26 @@ class Timetable extends React.Component<{}, State> {
         }
       }
     });
-    termSwitcher.reverse();
+
+    // 按照年份排序，再按照秋冬春夏排序
+    termSwitcher.sort((a: string, b: string) => {
+      if (a.substring(0, 9) < b.substring(0, 9)) {
+        return 1;
+      } else if (a.substring(0, 9) > b.substring(0, 9)) {
+        return -1;
+      } else {
+        if (a.substring(9, 11) === '秋冬' && b.substring(9, 11) === '春夏') {
+          return 1;
+        } else if (
+          a.substring(9, 11) === '春夏' &&
+          b.substring(9, 11) === '秋冬'
+        ) {
+          return -1;
+        } else {
+          return 0;
+        }
+      }
+    });
     this.setState({
       termSwitcher: Array.from(new Set(termSwitcher)),
     });
@@ -100,7 +119,7 @@ class Timetable extends React.Component<{}, State> {
           style={styles.timetable}
           contentContainerStyle={styles.timetableContent}>
           <View style={styles.headerRow}>
-            <View style={styles.timeCell}></View>
+            <View style={styles.timeCell} />
             {days.map(day => (
               <View key={day} style={styles.dayCell}>
                 <Text style={styles.dayHeader}>{day}</Text>
@@ -138,16 +157,20 @@ class Timetable extends React.Component<{}, State> {
                             top: top,
                           },
                         ]}
-                        onPress = {() => {
+                        onPress={() => {
                           const {navigation} = this.props as TimetableProps;
-                          navigation.navigate('课程详情', {courseName: classForThisTime.kcmc});
+                          navigation.navigate('课程详情', {
+                            courseName: classForThisTime.kcmc,
+                          });
                         }}>
                         <Text style={styles.className}>
                           {classForThisTime.kcmc}
                         </Text>
-                        {classDuration > 1 ? <Text style={styles.classLocation}>
-                          @{classForThisTime.cdmc}
-                        </Text> : null}
+                        {classDuration > 1 ? (
+                          <Text style={styles.classLocation}>
+                            @{classForThisTime.cdmc}
+                          </Text>
+                        ) : null}
                       </TouchableOpacity>
                     ) : null}
                   </View>

@@ -1,13 +1,7 @@
-import React, { Component } from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  FlatList,
-  TouchableOpacity,
-} from 'react-native';
+import React, {Component} from 'react';
+import {View, Text, StyleSheet, FlatList, TouchableOpacity} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { GradeProps } from '../../utils/types';
+import {GradeProps} from '../../utils/types';
 
 interface State {
   classInfo: any[];
@@ -61,13 +55,31 @@ class Grade extends Component<{}, State> {
         }
       }
     });
-    // 将termSwitcher进行倒置
-    termSwitcher.reverse();
+
+    // 按照年份排序，再按照秋冬春夏排序
+    termSwitcher.sort((a: string, b: string) => {
+      if (a.substring(0, 9) < b.substring(0, 9)) {
+        return 1;
+      } else if (a.substring(0, 9) > b.substring(0, 9)) {
+        return -1;
+      } else {
+        if (a.substring(9, 11) === '秋冬' && b.substring(9, 11) === '春夏') {
+          return 1;
+        } else if (
+          a.substring(9, 11) === '春夏' &&
+          b.substring(9, 11) === '秋冬'
+        ) {
+          return -1;
+        } else {
+          return 0;
+        }
+      }
+    });
     this.setState({
       termSwitcher: Array.from(new Set(termSwitcher)),
     });
     if (!this.state.isTermSet) {
-      this.setState({ isTermSet: true, selectedTerm: termSwitcher[0] });
+      this.setState({isTermSet: true, selectedTerm: termSwitcher[0]});
       this.selectTerm(termSwitcher[0]);
     }
   }
@@ -115,7 +127,7 @@ class Grade extends Component<{}, State> {
   };
 
   selectTerm = (term: string) => {
-    this.setState({ selectedTerm: term });
+    this.setState({selectedTerm: term});
   };
 
   // 计算GPA
@@ -153,7 +165,7 @@ class Grade extends Component<{}, State> {
   calculateXueqiGPA = (xueqi: string) => {
     const xnmmc = xueqi.substring(0, 9);
     const xqmmc = xueqi.substring(9, 11);
-    const xqmTable: any = { 秋冬: '1', 春夏: '2' };
+    const xqmTable: any = {秋冬: '1', 春夏: '2'};
     let totalCredit = 0;
     let totalGrade = 0;
     this.state.gradeInfo.forEach(item => {
@@ -174,7 +186,7 @@ class Grade extends Component<{}, State> {
   calculateXueqiCredit = (xueqi: string) => {
     const xnmmc = xueqi.substring(0, 9);
     const xqmmc = xueqi.substring(9, 11);
-    const xqmTable: any = { 秋冬: '1', 春夏: '2' };
+    const xqmTable: any = {秋冬: '1', 春夏: '2'};
     let totalCredit = 0;
     this.state.gradeInfo.forEach(item => {
       let items = item.items;
@@ -193,7 +205,7 @@ class Grade extends Component<{}, State> {
   getCoursesByTerm = (term: string) => {
     const xnmmc = term.substring(0, 9);
     const xqmmc = term.substring(9, 11);
-    const xqmTable: any = { 秋冬: '1', 春夏: '2' };
+    const xqmTable: any = {秋冬: '1', 春夏: '2'};
     let courses: any = [];
     this.state.gradeInfo.forEach(item => {
       let items = item.items;
@@ -212,12 +224,13 @@ class Grade extends Component<{}, State> {
     return courses;
   };
 
-  renderCourse = ({ item }: { item: any }) => (
-				<TouchableOpacity style={styles.courseItem} onPress={() => {
-					const {navigation} = this.props as GradeProps;
-					navigation.navigate('课程详情', {courseName: item.kcmc});
-			}
-		}>
+  renderCourse = ({item}: {item: any}) => (
+    <TouchableOpacity
+      style={styles.courseItem}
+      onPress={() => {
+        const {navigation} = this.props as GradeProps;
+        navigation.navigate('课程详情', {courseName: item.kcmc});
+      }}>
       <View style={styles.courseHeader}>
         <Text style={styles.courseName}>{item.kcmc}</Text>
         <Text style={styles.courseScore}>
@@ -228,7 +241,7 @@ class Grade extends Component<{}, State> {
         {item.jxbmc} / {item.xf} 学分
       </Text>
       <View style={styles.progressBarContainer}>
-        <View style={[styles.progressBar, { width: `${item.bfzcj}%` }]} />
+        <View style={[styles.progressBar, {width: `${item.bfzcj}%`}]} />
       </View>
     </TouchableOpacity>
   );
@@ -280,7 +293,7 @@ class Grade extends Component<{}, State> {
         ].map((item, index) => (
           <View
             key={index}
-            style={[styles.gradeItem, { backgroundColor: item.color }]}>
+            style={[styles.gradeItem, {backgroundColor: item.color}]}>
             <Text style={styles.gradeLabel}>{item.label}</Text>
             <Text style={styles.gradeValue}>{item.value}</Text>
           </View>
@@ -290,7 +303,7 @@ class Grade extends Component<{}, State> {
         <FlatList
           horizontal
           data={this.state.termSwitcher}
-          renderItem={({ item: term, index }) => (
+          renderItem={({item: term, index}) => (
             <TouchableOpacity
               key={index}
               style={[
@@ -372,7 +385,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     width: '100%',
     marginTop: 10,
-		marginBottom: 10,
+    marginBottom: 10,
   },
   termItem: {
     padding: 10,
@@ -403,7 +416,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     marginBottom: 10,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
+    shadowOffset: {width: 0, height: 1},
     shadowOpacity: 0.3,
     shadowRadius: 2,
     elevation: 2,

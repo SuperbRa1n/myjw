@@ -61,15 +61,32 @@ class Study extends Component {
     this.state.classInfo.forEach(item => {
       if (item.kbList.length > 0) {
         const xnm = item.xsxx.XNMC;
-        const xqm = item.xsxx.XQM == '3' ? '秋冬' : '春夏';
+        const xqm = item.xsxx.XQM === '3' ? '秋冬' : '春夏';
         const term = `${xnm}${xqm}`;
         if (!termSwitcher.includes(term)) {
           termSwitcher.push(term);
         }
       }
     });
-    // 将termSwitcher进行倒置
-    termSwitcher.reverse();
+    // 按照年份排序，再按照秋冬春夏排序
+    termSwitcher.sort((a: string, b: string) => {
+      if (a.substring(0, 9) < b.substring(0, 9)) {
+        return 1;
+      } else if (a.substring(0, 9) > b.substring(0, 9)) {
+        return -1;
+      } else {
+        if (a.substring(9, 11) === '秋冬' && b.substring(9, 11) === '春夏') {
+          return 1;
+        } else if (
+          a.substring(9, 11) === '春夏' &&
+          b.substring(9, 11) === '秋冬'
+        ) {
+          return -1;
+        } else {
+          return 0;
+        }
+      }
+    });
     this.setState({
       termSwitcher: Array.from(new Set(termSwitcher)),
     });
