@@ -1,0 +1,53 @@
+name: "Build Android app"
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: macos-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install Java
+        uses: actions/setup-java@v3
+        with:
+          java-version: 17
+          distribution: adopt
+          cache: gradle
+
+      - name: Validate Gradle wrapper
+        uses: gradle/actions/wrapper-validation@v3
+
+      - name: Setup Node  
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'yarn'
+
+      - name: Run Yarn Install
+        run: |
+             npm i -g corepack
+             yarn install
+      - name: Build application
+        run: |
+             cd android
+             ./gradlew assembleRelease
+      - name: Get Current Time
+        uses: srfrnk/current-time@master
+        id: current-time
+        with:
+            format: YYYYMMDD_HHmmss
+
+      - name: Rename File
+        run: |
+             cp android/app/build/outputs/apk/release/app-release.apk android/rwiki_${{ steps.current-time.outputs.formattedTime }}.apk
+      - name: Upload application
+        uses: actions/upload-artifact@v4
+        with:
+          name: jiaowu_${{ steps.current-time.outputs.formattedTime }}
+          path: android/jiaowu_${{ steps.current-time.outputs.formattedTime }}.apk
+          retention-days: 15
